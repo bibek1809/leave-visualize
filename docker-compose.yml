@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  csv-datamart-api:
+    image: csv-datamart:v1
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: on-failure
+    ports:
+      - "4448:4448"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./docker_files/storage:/app/storage:rw
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./docker_files/sql/init:/docker-entrypoint-initdb.d
+      - ./docker_files/sql/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  airflow:
+    image: apache/airflow:2.7.2-python3.10
+    container_name: airflow
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql+pymysql://${AIRFLOW_USER}:${AIRFLOW_PASSWORD}@mysql_db/${AIRFLOW_DATABASE}
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'True'
+    volumes:
+      - ./docker_files/airflow/dags:/opt/airflow/dags
+      - ./docker_files/airflow/config:/opt/airflow/config
+      - ./docker_files/airflow/init_airflow.sh:/init_airflow.sh
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    entrypoint: ["/bin/bash", "/init_airflow.sh"]
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
