@@ -14,4 +14,6 @@ services:
     volumes:
       - .:/app
       - ./storage:/app/storage:rw
+      - ./templates:/app/templates
+      - ./static:/app/static
     network_mode: host

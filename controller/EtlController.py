@@ -24,7 +24,7 @@ def insert_user_data():
         etl_name = data.get('etl_name')
         # Default to yesterday and today if dates are not provided
         if not inserted_date:
-            inserted_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+            inserted_date = datetime.now().strftime('%Y-%m-%d')
         try:
             datetime.strptime(inserted_date, '%Y-%m-%d')
         except ValueError:
@@ -32,7 +32,7 @@ def insert_user_data():
         if not etl_name:
             for i in etl_datas:
                 executor.submit(handler.initiate_etl, i, inserted_date)
-                return jsonify({"message": f"Insert operation started for {i} Table initiated as {inserted_date}"}), 200
+            return jsonify({"message": f"Insert operation started for {i} Table initiated as {inserted_date}"}), 200
         elif etl_name in etl_datas:
             executor.submit(handler.initiate_etl, etl_name, inserted_date)
             return jsonify({"message": f"Insert operation started for {etl_name} Table initiated as {inserted_date}"}), 200

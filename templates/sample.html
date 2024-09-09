@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Plots</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        .plot-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .plot-container img {
+            border: 2px solid #555;
+            border-radius: 8px;
+            width: 500px;
+            height: auto; /* Maintain aspect ratio */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .plot-container:hover img {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        .plot-container h2 {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sample Plots</h1>
+
+    <div class="plot-container">
+        <h2>Department Analysis</h2>
+        <img src="data:image/png;base64,{{ department_plot }}" alt="Department Analysis">
+    </div>
+
+    <div class="plot-container">
+        <h2>Supervisor Analysis</h2>
+        <img src="data:image/png;base64,{{ supervisor_plot }}" alt="Supervisor Analysis on Leave Report">
+    </div>
+
+    <div class="plot-container">
+        <h2>Designation Analysis</h2>
+        <img src="data:image/png;base64,{{ designation_plot }}" alt="Designation Analysis">
+    </div>
+
+    <div class="plot-container">
+        <h2>Leave Days Analysis</h2>
+        <img src="data:image/png;base64,{{ leave_days_plot }}" alt="Leave Type  Analysis">
+    </div>
+
+</body>
+</html>

@@ -1,15 +1,16 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_limiter import Limiter
+
 from flask_cors import CORS
-from utils import Configuration, token_encryption
-from controller import AquisitionController,FileController,EtlController
+from utils import Configuration, token_encryption, Visualize
+from controller import AquisitionController,FileController,EtlController,VisualizeController
 from middleware.checkXCustomPasscode import PasscodeValidator
 
 complete_env_path = os.getcwd() + "/.env"
 os.environ['env'] = complete_env_path
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 CORS(app, resources=r"/*")
 
 # 100 conncetion limit garni
@@ -27,7 +28,7 @@ def before_request():
 @app.before_request
 def add_custom_header():
     # Configuration.create_directories()
-    if request.endpoint != 'check_config' and request.endpoint !='app_start':
+    if request.endpoint != 'check_config' and request.endpoint !='app_start' and request.endpoint !='sample' and request.endpoint != 'download':
         message = {
             "success": False,
             "code": '400',
@@ -49,6 +50,7 @@ def add_custom_header():
 app.register_blueprint(FileController.file_blueprint)
 app.register_blueprint(AquisitionController.aquisition)
 app.register_blueprint(EtlController.etl)
+app.register_blueprint(VisualizeController.viz)
 # app.register_blueprint(SchemaController.schema_blueprint)
 # app.register_blueprint(SpaceController.space_blueprint)
 # app.register_blueprint(FileSpaceController.fileregistry_blueprint)
@@ -61,6 +63,21 @@ def check_config():
 @app.route("/", methods=['GET'])
 def app_start():
     return {"App Connection State":"Api Access"}
+
+
+@app.route("/sample", methods=['GET'])
+def sample():
+    dataframe = Visualize.get_data()
+    department_plot_path = Visualize.department_analysis(dataframe)
+    supervisor_plot_path = Visualize.supervisor_analysis(dataframe)
+    designation_plot_path = Visualize.designation_analysis(dataframe)
+    leave_days_plot_path = Visualize.leave_days_analysis(dataframe)
+    return render_template('sample.html', 
+                           department_plot=department_plot_path, 
+                           supervisor_plot=supervisor_plot_path, 
+                           designation_plot=designation_plot_path, 
+                           leave_days_plot=leave_days_plot_path)
+
 
 
 def start():
