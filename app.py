@@ -3,7 +3,7 @@ from flask import Flask, request
 from flask_limiter import Limiter
 from flask_cors import CORS
 from utils import Configuration, token_encryption
-from controller import AquisitionController,FileController, SchemaController, SpaceController,FileSpaceController,MongoController
+from controller import AquisitionController,FileController,EtlController
 from middleware.checkXCustomPasscode import PasscodeValidator
 
 complete_env_path = os.getcwd() + "/.env"
@@ -26,7 +26,7 @@ def before_request():
 
 @app.before_request
 def add_custom_header():
-    Configuration.create_directories()
+    # Configuration.create_directories()
     if request.endpoint != 'check_config' and request.endpoint !='app_start':
         message = {
             "success": False,
@@ -48,10 +48,11 @@ def add_custom_header():
 
 app.register_blueprint(FileController.file_blueprint)
 app.register_blueprint(AquisitionController.aquisition)
-app.register_blueprint(SchemaController.schema_blueprint)
-app.register_blueprint(SpaceController.space_blueprint)
-app.register_blueprint(FileSpaceController.fileregistry_blueprint)
-app.register_blueprint(MongoController.mongo_blueprint)
+app.register_blueprint(EtlController.etl)
+# app.register_blueprint(SchemaController.schema_blueprint)
+# app.register_blueprint(SpaceController.space_blueprint)
+# app.register_blueprint(FileSpaceController.fileregistry_blueprint)
+# app.register_blueprint(MongoController.mongo_blueprint)
 
 @app.route("/health", methods=['GET'])
 def check_config():

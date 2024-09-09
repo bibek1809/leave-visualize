@@ -16,7 +16,7 @@ class JDBCRepository:
         return self.jdbcDataSource.execute(f"SELECT * FROM {self.entity_name} order by 1 desc limit 1")
 
     def find_all(self):
-        return self.jdbcDataSource.execute(f"SELECT * FROM {self.entity_name} where is_deleted = 0")
+        return self.jdbcDataSource.execute(f"SELECT * FROM {self.entity_name}")
 
     def find(self, entity):
         where_conditions = dict(filter(lambda i: i[1] is not None, entity.to_json().items()))
@@ -27,7 +27,7 @@ class JDBCRepository:
             return self.jdbcDataSource.execute(f"SELECT * FROM {self.entity_name} ")
 
     def find_by_id(self, id):
-        query = f"SELECT * FROM {self.entity_name} WHERE {self.id} = {id} and is_deleted = 0"
+        query = f"SELECT * FROM {self.entity_name} WHERE {self.id} = {id}"
         return self.jdbcDataSource.execute(query)
     
     def find_by_id_all_status(self, id):
@@ -38,9 +38,29 @@ class JDBCRepository:
         insert_pairs = dict(filter(lambda i: i[1] is not None, entity.to_json().items()))
         columns = ",".join(insert_pairs.keys())
         values = ",".join(map(lambda v: self.convert(v), insert_pairs.values()))
-        sql_insert = f"INSERT INTO {self.entity_name}({columns}) VALUES({values})"
+        sql_insert = f"Insert INTO {self.entity_name}({columns}) VALUES({values})"
         return self.find_by_id(self.jdbcDataSource.insert_query(sql_insert))
 
+    def save_bulk(self, entities):
+        if not entities:
+            return
+
+        # Extract columns from the first entity
+        first_entity = entities[0]
+        columns = list(filter(lambda k: first_entity.to_json().get(k) is not None, first_entity.to_json().keys()))
+        columns_str = ",".join(columns)
+
+        # Build the values part of the query
+        values_list = []
+        for entity in entities:
+            values = [self.convert_bulk(entity.to_json().get(col)) for col in columns]
+            values_list.append(f"({','.join(values)})")
+
+        values_str = ",".join(values_list)
+        sql_insert = f"REPLACE INTO {self.entity_name} ({columns_str}) VALUES {values_str}"
+
+        # Execute the bulk insert
+        self.jdbcDataSource.insert_query(sql_insert)
 
     def update(self, entity):
         update_values = dict(filter(lambda i: i[1] is not None and i[0] is not self.id, entity.to_json().items()))
@@ -65,13 +85,33 @@ class JDBCRepository:
             return "'" + val.replace("'", "''") + "'"
         elif isinstance(val, int):
             return str(val)
-        elif isinstance(val, dict):
-            return "'" + json.dumps(val) + "'"
-        elif isinstance(val,list):
-            return "'" + json.dumps(val)+ "'"
-
+        elif isinstance(val, (dict, list)):
+            return "'" + json.dumps(val).replace("'", "''") + "'"
         else:
-            return "'" + val.replace("'", "''") + "'"
+            return "'" + str(val).replace("'", "''") + "'"
+        
+
+
+
+    def convert_bulk(self, value):
+        if isinstance(value, str):
+            # Escape single quotes in the string for SQL compatibility
+            escaped_value = value.replace("'", "''")
+            return f"'{escaped_value}'"
+        elif isinstance(value, int):
+            return str(value)
+        elif isinstance(value, (dict, list)):
+            # Convert dict or list to JSON and escape single quotes
+            json_value = json.dumps(value)
+            escaped_json_value = json_value.replace("'", "''")
+            return f"'{escaped_json_value}'"
+        elif value is None:
+            return 'NULL'
+        else:
+            # Convert other types to string and escape single quotes
+            escaped_value = str(value).replace("'", "''")
+            return f"'{escaped_value}'"
+
 
     def find_by_values(self, json_data, table_name):
         column_names = list(json_data.keys())
