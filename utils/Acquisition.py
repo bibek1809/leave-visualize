@@ -128,22 +128,25 @@ class Acquisition:
 
     @staticmethod
     def fetch_all_leave_data(start_date, end_date):
-        date_ranges = Acquisition.create_date_ranges(start_date, end_date)
+        if status_service.find_last_added()[0]["status_type"] != "LeaveTxn":
+            print('task cannot be initiated now')
+        else:
+            date_ranges = Acquisition.create_date_ranges(start_date, end_date)
 
-        threads = []
+            threads = []
 
-        # Launch a new thread for each date range
-        for start, end in date_ranges:
-            t = threading.Thread(target=Acquisition.fetch_and_process_data, args=(start, end, 1))
-            threads.append(t)
-            t.start()
+            # Launch a new thread for each date range
+            for start, end in date_ranges:
+                t = threading.Thread(target=Acquisition.fetch_and_process_data, args=(start, end, 1))
+                threads.append(t)
+                t.start()
 
-            # Adding a delay between starting threads to prevent server overload
-            time.sleep(5)  # Pause 5 seconds before launching the next thread
+                # Adding a delay between starting threads to prevent server overload
+                time.sleep(5)  # Pause 5 seconds before launching the next thread
 
-        # Wait for all threads to finish
-        for t in threads:
-            t.join()
+            # Wait for all threads to finish
+            for t in threads:
+                t.join()
 
     @staticmethod
     def fetch_and_process_etl(table_name,inserted_date,position):
