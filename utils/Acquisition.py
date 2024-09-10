@@ -128,7 +128,11 @@ class Acquisition:
 
     @staticmethod
     def fetch_all_leave_data(start_date, end_date):
-        if status_service.find_last_added()[0]["status_type"] != "LeaveTxn":
+        try:
+            last_task = status_service.find_last_added()[0]["status_type"]
+        except:
+            last_task = "LeaveTxn"
+        if last_task != "LeaveTxn":
             print('task cannot be initiated now')
         else:
             date_ranges = Acquisition.create_date_ranges(start_date, end_date)
@@ -156,16 +160,19 @@ class Acquisition:
                 data = aquisition_service.get_user_data(inserted_date,position)
                 Acquisition.process_leave_data(data,User,user_service)
                 Acquisition.update_status(status_id,1)
+                status_service.update_previous_status('Raw',17)
             elif table_name == 'leave':
                 status_id = Acquisition.insert_status('Leave',inserted_date)
                 data = aquisition_service.get_leave_data(inserted_date,position)
                 Acquisition.process_leave_data(data,Leave,leave_service)
                 Acquisition.update_status(status_id,1)
+                status_service.update_previous_status('User',status_id)
             elif table_name == 'leave_txn':
                 status_id = Acquisition.insert_status('LeaveTxn',inserted_date)
                 data = aquisition_service.get_transaction_data(inserted_date,position)
                 Acquisition.process_leave_data(data,LeaveTransaction,leave_txn_service)
                 Acquisition.update_status(status_id,1)
+                status_service.update_previous_status('Leave',status_id)
             else:
                 pass
         except Exception as e:
