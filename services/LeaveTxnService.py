@@ -12,6 +12,7 @@ class LeaveTxnService(JDBCRepository):
         if start is None:
             start = '2021-01-10'
         if end is None:
-            end = '2022-01-10'
-        return self.jdbcDataSource.execute(f"""select * from  leave_transactions where start_date between '{start}' and '{end}' limit 2000 """)
+            end = '2024-01-10'
+        return self.jdbcDataSource.execute(f"""select * from  leave_transactions where start_date between '{start}' and '{end}' 
+         order by 1 desc limit 30000 """)
 

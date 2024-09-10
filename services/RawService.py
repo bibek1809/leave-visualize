@@ -67,9 +67,10 @@ class RawService(JDBCRepository):
                     CASE WHEN is_consecutive = 'True' THEN 1 ELSE 0 END AS is_consecutive,
                     CASE WHEN is_automated = 'True' THEN 1 ELSE 0 END AS is_automated,
                     department_description,designation_name,
-                        CASE WHEN is_supervisor = 'True' THEN 1 ELSE 0 END AS is_supervisor,
+                        CASE WHEN team_manager_id is NUll  THEN 1 ELSE 0 END AS is_supervisor,
                     CASE WHEN is_hr = 'True' THEN 1 ELSE 0 END AS is_hr
                 FROM raw
                 WHERE inserted_at = '{date}'
+                group by id
                 LIMIT {position}, 10000
                     """)
