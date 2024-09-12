@@ -22,7 +22,7 @@ The Leave Analysis Platform automates the extraction, transformation, and loadin
 
 You can view the API documentation by following this link:
 
-[Swagger Documentation](./templates/swagger.html)
+[Swagger Documentation](./docs/API_DOCUMENTS/swagger.pdf)
 
 ## Folder Structure
 

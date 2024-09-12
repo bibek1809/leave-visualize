@@ -5,10 +5,10 @@
     <title>Vyaguta Leave Data API Documentation</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; }
-        h1, h2, h3 { color: #333; }
+        h1, h2, h3, h4 { color: #333; }
         code { background: #f4f4f4; padding: 0.2em 0.4em; border-radius: 4px; }
         pre { background: #f4f4f4; padding: 1em; border-radius: 4px; overflow-x: auto; }
-        .endpoint { margin-bottom: 1em; }
+        .endpoint { margin-bottom: 1em; padding: 1em; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
         .endpoint h3 { margin-top: 0; }
         .parameters, .response { margin-left: 1em; }
         .parameters ul, .response ul { list-style-type: none; padding-left: 0; }
@@ -18,6 +18,9 @@
         .response h4 { margin-top: 0; }
         .response p { margin: 0; }
         .example { background: #e9ecef; padding: 1em; border-radius: 4px; }
+        .endpoint-summary { font-weight: bold; color: #007bff; }
+        .endpoint-description { margin-top: 0.5em; }
+        .endpoint-headers, .endpoint-parameters, .endpoint-response { margin-top: 1em; }
     </style>
 </head>
 <body>
@@ -44,132 +47,145 @@
     <h2 id="authentication">2. Authentication</h2>
     <p>All API requests require an <code>X-Custom-Passcode</code> header for authorization. The passcode ensures secure access to the API resources. Failure to provide the correct passcode will result in an authentication error.</p>
     <p><strong>Sample Header:</strong></p>
-    <pre><code>X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09</code></pre>
+    <pre><code>X-Custom-Passcode: passcode_here</code></pre>
 
     <h2 id="api-endpoints">3. API Endpoints</h2>
 
     <div class="endpoint">
         <h3 id="fetching-and-uploading-data">3.1 Fetching and Uploading Data</h3>
-        <p>This endpoint triggers the function to acquire leave data from the Vyaguta application. If the <code>start_date</code> and <code>end_date</code> are not provided, the API defaults to using yesterday's date as the <code>start_date</code> and today’s date as the <code>end_date</code>.</p>
+        <div class="endpoint-summary">Triggers the function to acquire data from the Vyaguta application.</div>
+        <div class="endpoint-description">
+            If `start_date` and `end_date` are not provided, the API defaults to using yesterday's date for `start_date` and today's date for `end_date`.
+        </div>
         <h4>URL: <code>/api/v1/acquire/insert</code></h4>
         <h4>Method: <code>POST</code></h4>
-        <h4>Headers:</h4>
-        <ul>
-            <li><code>X-Custom-Passcode</code>: Required, string.</li>
-        </ul>
-        <h4>Parameters:</h4>
-        <ul class="parameters">
-            <li><code>start_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to yesterday.</li>
-            <li><code>end_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to today.</li>
-        </ul>
-        <h4>Response:</h4>
-        <div class="response">
-            <pre><code>{
+        <div class="endpoint-headers">
+            <h4>Headers:</h4>
+            <ul>
+                <li><code>X-Custom-Passcode</code>: Required, string.</li>
+            </ul>
+        </div>
+        <div class="endpoint-parameters">
+            <h4>Parameters:</h4>
+            <ul class="parameters">
+                <li><code>start_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to yesterday.</li>
+                <li><code>end_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to today.</li>
+            </ul>
+        </div>
+        <div class="endpoint-response">
+            <h4>Response:</h4>
+            <div class="response">
+                <pre><code>{
     "message": "Insert operation started for leave Table initiated as 2024-09-12"
 }</code></pre>
+            </div>
         </div>
-        <h4>Usage Example:</h4>
-        <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/acquire/insert' \
---header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09' \
+        <div class="endpoint-example">
+            <h4>Usage Example:</h4>
+            <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/acquire/insert' \
+--header 'X-Custom-Passcode: passcode_here' \
 --form 'start_date="2021-01-01"' \
 --form 'end_date="2024-10-02"'</code></pre>
+        </div>
     </div>
 
     <div class="endpoint">
         <h3 id="etl-process">3.2 ETL Process</h3>
-        <p>This endpoint triggers the ETL process for specific data sets such as <code>user</code>, <code>leave</code>, and <code>leave_txn</code>. If the <code>inserted_date</code> is not provided, the current date is used. If the <code>etl_name</code> is not specified, the API processes all ETL jobs.</p>
+        <div class="endpoint-summary">Triggers the ETL process for specific data sets.</div>
+        <div class="endpoint-description">
+            If `inserted_date` is not provided, the current date is used. If `etl_name` is not specified, the API processes all ETL jobs including `user`, `leave`, and `leave_txn`.
+        </div>
         <h4>URL: <code>/api/v1/etl/load</code></h4>
         <h4>Method: <code>POST</code></h4>
-        <h4>Headers:</h4>
-        <ul>
-            <li><code>X-Custom-Passcode</code>: Required, string.</li>
-        </ul>
-        <h4>Parameters:</h4>
-        <ul class="parameters">
-            <li><code>inserted_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to today.</li>
-            <li><code>etl_name</code>: Optional, string. If not provided, processes <code>user</code>, <code>leave</code>, and <code>leave_txn</code>.</li>
-        </ul>
-        <h4>Response:</h4>
-        <div class="response">
-            <pre><code>{
+        <div class="endpoint-headers">
+            <h4>Headers:</h4>
+            <ul>
+                <li><code>X-Custom-Passcode</code>: Required, string.</li>
+            </ul>
+        </div>
+        <div class="endpoint-parameters">
+            <h4>Parameters:</h4>
+            <ul class="parameters">
+                <li><code>inserted_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to today.</li>
+                <li><code>etl_name</code>: Optional, string. If not provided, processes `user`, `leave`, and `leave_txn`.</li>
+            </ul>
+        </div>
+        <div class="endpoint-response">
+            <h4>Response:</h4>
+            <div class="response">
+                <pre><code>{
     "message": "ETL process started for user Table as of 2024-09-07"
 }</code></pre>
+            </div>
         </div>
-        <h4>Usage Example:</h4>
-        <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/etl/load' \
---header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09' \
+        <div class="endpoint-example">
+            <h4>Usage Example:</h4>
+            <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/etl/load' \
+--header 'X-Custom-Passcode: passcode_here' \
 --form 'inserted_date="2024-09-07"' \
 --form 'etl_name="user"'</code></pre>
+        </div>
     </div>
 
     <div class="endpoint">
         <h3 id="sample-visualization">3.3 Sample Visualization</h3>
-        <p>This endpoint provides a sample of the data in HTML format. The sample data includes visualizations such as department analysis, supervisor analysis, designation analysis, and leave days analysis, viewable directly as a web page.</p>
+        <div class="endpoint-summary">Provides a sample of the data in HTML format.</div>
+        <div class="endpoint-description">
+            Returns an HTML page with sample data visualizations. The data is for sample purposes and can be viewed as a webpage.
+        </div>
         <h4>URL: <code>/sample</code></h4>
         <h4>Method: <code>GET</code></h4>
-        <h4>Headers:</h4>
-        <ul>
-            <li>None</li>
-        </ul>
-        <h4>Response:</h4>
-        <p>Returns an HTML page with embedded images of various visualizations. The images are transferred in binary format and rendered directly in the browser.</p>
-        <h4>Usage Example:</h4>
-        <pre><code>curl --location 'http://0.0.0.0:4448/sample'</code></pre>
+        <div class="endpoint-headers">
+            <h4>Headers:</h4>
+            <ul>
+                <li>None</li>
+            </ul>
+        </div>
+        <div class="endpoint-response">
+            <h4>Response:</h4>
+            <p>Returns an HTML page with embedded images of various visualizations.</p>
+        </div>
+        <div class="endpoint-example">
+            <h4>Usage Example:</h4>
+            <pre><code>curl --location 'http://0.0.0.0:4448/sample'</code></pre>
+        </div>
     </div>
 
     <div class="endpoint">
         <h3 id="visualize-download">3.4 Visualize Download</h3>
-        <p>This endpoint allows the download of visualized data based on different <code>plot_type</code> values. The available plot types include:</p>
-        <ul>
-            <li><code>department</code>: Visualizes department analysis.</li>
-            <li><code>supervisor</code>: Visualizes supervisor analysis.</li>
-            <li><code>designation</code>: Visualizes designation analysis.</li>
-            <li><code>leave</code>: Visualizes leave analysis.</li>
-        </ul>
-        <h4>URL: <code>/api/v1/viz/download/{plot_type}</code></h4>
+        <div class="endpoint-summary">Downloads a specific type of visualization.</div>
+        <div class="endpoint-description">
+            Provides downloadable visualizations based on the specified plot type. Supported plot types include `department`, `supervisor`, `designation`, and `leave`.
+        </div>
+        <h4>URL: <code>/api/v1/viz/sample/download/{plot_type}</code></h4>
         <h4>Method: <code>GET</code></h4>
-        <h4>Headers:</h4>
-        <ul>
-            <li><code>X-Custom-Passcode</code>: Required, string.</li>
-        </ul>
-        <h4>Parameters:</h4>
-        <ul class="parameters">
-            <li><code>plot_type</code>: Required, string. Determines the type of visualization to download.</li>
-        </ul>
-        <h4>Response:</h4>
-        <p>Returns a binary file containing the requested plot type. The content of the file depends on the <code>plot_type</code> provided.</p>
-        <h4>Usage Example:</h4>
-        <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/viz/download/department' \
---header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09'</code></pre>
+        <div class="endpoint-headers">
+            <h4>Headers:</h4>
+            <ul>
+                <li><code>X-Custom-Passcode</code>: Required, string.</li>
+            </ul>
+        </div>
+        <div class="endpoint-parameters">
+            <h4>Parameters:</h4>
+            <ul class="parameters">
+                <li><code>plot_type</code>: Required, string. The type of plot to download. Valid values are `department`, `supervisor`, `designation`, and `leave`.</li>
+            </ul>
+        </div>
+        <div class="endpoint-response">
+            <h4>Response:</h4>
+            <div class="response">
+                <p>Returns a downloadable file containing the requested visualization.</p>
+            </div>
+        </div>
+        <div class="endpoint-example">
+            <h4>Usage Example:</h4>
+            <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/viz/sample/download/department' \
+--header 'X-Custom-Passcode: passcode_here'</code></pre>
+        </div>
     </div>
 
     <h2 id="response-formats">4. Response Formats</h2>
-    <p>API responses are typically in JSON format. The exact structure of the response depends on the endpoint and the data returned. Below are examples for different endpoints:</p>
-
-    <div class="response">
-        <h4>4.1 Response Example for Fetching Data</h4>
-        <pre><code>{
-    "message": "Insert operation started for leave Table initiated as 2024-09-12"
-}</code></pre>
-    </div>
-
-    <div class="response">
-        <h4>4.2 Response Example for ETL Process</h4>
-        <pre><code>{
-    "message": "ETL process started for user Table as of 2024-09-07"
-}</code></pre>
-    </div>
-
-    <div class="response">
-        <h4>4.3 Response Example for Sample Visualization</h4>
-        <pre><code>HTML content of the sample visualization</code></pre>
-    </div>
-
-    <div class="response">
-        <h4>4.4 Response Example for Visualize Download</h4>
-        <pre><code>Binary file containing the plot</code></pre>
-    </div>
+    <p>The API responses are generally in JSON format for data operations and downloadable files for visualizations. HTML format is used for sample visualization.</p>
 
 </body>
 </html>
-

@@ -28,7 +28,7 @@ def before_request():
 @app.before_request
 def add_custom_header():
     # Configuration.create_directories()
-    if request.endpoint != 'check_config' and request.endpoint !='app_start' and request.endpoint !='sample' and request.endpoint != 'download':
+    if request.endpoint != 'check_config' and request.endpoint !='app_start' and request.endpoint !='sample' and request.endpoint != 'download' and request.endpoint != 'swagger':
         message = {
             "success": False,
             "code": '400',
@@ -63,6 +63,10 @@ def check_config():
 @app.route("/", methods=['GET'])
 def app_start():
     return {"App Connection State":"Api Access"}
+
+@app.route("/swagger", methods=['GET'])
+def swagger():
+    return render_template('swagger.html')
 
 
 @app.route("/sample", methods=['GET'])
