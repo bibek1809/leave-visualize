@@ -173,6 +173,7 @@ class Acquisition:
                 Acquisition.process_leave_data(data,LeaveTransaction,leave_txn_service)
                 Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('Leave',status_id)
+                status_service.update_previous_status('LeaveTxn',status_id+1)
             else:
                 pass
         except Exception as e:

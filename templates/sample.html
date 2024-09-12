@@ -17,51 +17,60 @@
         }
         h2 {
             color: #555;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
         .plot-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 30px;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
         }
         .plot-container img {
             border: 2px solid #555;
             border-radius: 8px;
-            width: 500px;
+            width: 100%;
             height: auto; /* Maintain aspect ratio */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Ensure images don't exceed this width */
         }
         .plot-container:hover img {
             transform: scale(1.05);
             transition: transform 0.3s ease;
-        }
-        .plot-container h2 {
-            text-align: center;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Sample Plots</h1>
 
-    <div class="plot-container">
-        <h2>Department Analysis</h2>
-        <img src="data:image/png;base64,{{ department_plot }}" alt="Department Analysis">
-    </div>
+    <div class="grid-container">
+        <div class="plot-container">
+            <h2>Department Analysis</h2>
+            <img src="data:image/png;base64,{{ department_plot }}" alt="Department Analysis">
+        </div>
 
-    <div class="plot-container">
-        <h2>Supervisor Analysis</h2>
-        <img src="data:image/png;base64,{{ supervisor_plot }}" alt="Supervisor Analysis on Leave Report">
-    </div>
+        <div class="plot-container">
+            <h2>Supervisor Analysis</h2>
+            <img src="data:image/png;base64,{{ supervisor_plot }}" alt="Supervisor Analysis on Leave Report">
+        </div>
 
-    <div class="plot-container">
-        <h2>Designation Analysis</h2>
-        <img src="data:image/png;base64,{{ designation_plot }}" alt="Designation Analysis">
-    </div>
+        <div class="plot-container">
+            <h2>Designation Analysis</h2>
+            <img src="data:image/png;base64,{{ designation_plot }}" alt="Designation Analysis">
+        </div>
 
-    <div class="plot-container">
-        <h2>Leave Days Analysis</h2>
-        <img src="data:image/png;base64,{{ leave_days_plot }}" alt="Leave Type  Analysis">
+        <div class="plot-container">
+            <h2>Leave Days Analysis</h2>
+            <img src="data:image/png;base64,{{ leave_days_plot }}" alt="Leave Type Analysis">
+        </div>
     </div>
 
 </body>
