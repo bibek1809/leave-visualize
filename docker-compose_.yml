@@ -1,0 +1,18 @@
+version: "3"
+services:
+  csv-datamart-api:
+    image: csv-datamart:v1
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: on-failure
+    # Remove port bindings when using host network mode
+    # ports:
+    #   - 4448:4448
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./templates:/app/templates:rw
+      - ./static:/app/static
+    network_mode: host

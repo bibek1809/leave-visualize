@@ -20,9 +20,9 @@ def download(plot_type):
         end_date = data.get('end_date')
         # Default to yesterday and today if dates are not provided
         if not start_date:
-            start_date = '2021-01-11'
+            start_date = '2024-01-01'
         if not end_date:
-            end_date = '2024-01-12'
+            end_date = '2024-08-12'
         try:
             datetime.strptime(start_date, '%Y-%m-%d')
             datetime.strptime(end_date, '%Y-%m-%d')
@@ -44,6 +44,8 @@ def download(plot_type):
             plt = Visualize.designation_analysis(dataframe)
         elif plot_type == 'leave':
             plt = Visualize.leave_days_analysis(dataframe)
+        elif plot_type == 'leave_type':
+            plt = Visualize.leave_type_bar_chart(dataframe)
         img_data = base64.b64decode(plt)
 
         # Return the file for download

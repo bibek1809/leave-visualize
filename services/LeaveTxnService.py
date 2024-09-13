@@ -10,9 +10,9 @@ class LeaveTxnService(JDBCRepository):
 
     def find_data(self,start,end):
         if start is None:
-            start = '2021-01-10'
+            start = '2024-01-01'
         if end is None:
-            end = '2024-01-10'
+            end = '2024-09-10'
         return self.jdbcDataSource.execute(f"""select * from  leave_transactions where start_date between '{start}' and '{end}' 
          order by 1 desc limit 30000 """)
 

@@ -8,6 +8,7 @@ from services.StatusService import StatusService
 from services.UserService import UserService
 from services.LeaveService import LeaveService
 from services.LeaveTxnService import LeaveTxnService
+from services.DesignationService import DesignationService
 from database import DataSourceConfiguration
 from entity.ObjectMapper import ObjectMapper
 from entity.Raw import Raw
@@ -15,11 +16,15 @@ from entity.Status import Status
 from entity.User import User
 from entity.Leave import Leave
 from entity.LeaveTransaction import LeaveTransaction
+from entity.Designation import Designation
 status_service = StatusService(DataSourceConfiguration.mysql_datasource)
 aquisition_service = RawService(DataSourceConfiguration.mysql_datasource)
 user_service = UserService(DataSourceConfiguration.mysql_datasource)
 leave_service = LeaveService(DataSourceConfiguration.mysql_datasource)
 leave_txn_service = LeaveTxnService(DataSourceConfiguration.mysql_datasource)
+designation_service = DesignationService(DataSourceConfiguration.mysql_datasource)
+
+
 class Acquisition:
     def __init__(self):
         pass
@@ -131,8 +136,8 @@ class Acquisition:
         try:
             last_task = status_service.find_last_added()[0]["status_type"]
         except:
-            last_task = "LeaveTxn"
-        if last_task != "LeaveTxn":
+            last_task = "Designation"
+        if last_task != "Designation":
             print('task cannot be initiated now')
         else:
             date_ranges = Acquisition.create_date_ranges(start_date, end_date)
@@ -160,7 +165,7 @@ class Acquisition:
                 data = aquisition_service.get_user_data(inserted_date,position)
                 Acquisition.process_leave_data(data,User,user_service)
                 Acquisition.update_status(status_id,1)
-                status_service.update_previous_status('Raw',17)
+                status_service.update_previous_status('Raw',status_id)
             elif table_name == 'leave':
                 status_id = Acquisition.insert_status('Leave',inserted_date)
                 data = aquisition_service.get_leave_data(inserted_date,position)
@@ -173,7 +178,13 @@ class Acquisition:
                 Acquisition.process_leave_data(data,LeaveTransaction,leave_txn_service)
                 Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('Leave',status_id)
-                status_service.update_previous_status('LeaveTxn',status_id+1)
+            elif table_name == 'designation':
+                status_id = Acquisition.insert_status('Designation',inserted_date)
+                data = aquisition_service.get_designation_data(inserted_date,position)
+                Acquisition.process_leave_data(data,Designation,designation_service)
+                Acquisition.update_status(status_id,1)
+                status_service.update_previous_status('LeaveTxn',status_id)
+                status_service.update_previous_status('Designation',status_id)
             else:
                 pass
         except Exception as e:
@@ -183,7 +194,7 @@ class Acquisition:
     @staticmethod
     def initiate_etl(table_name, inserted_date):
         threads = []
-        total_count = aquisition_service.get_data_count(inserted_date)[0]["total_count"]
+        total_count = aquisition_service.get_data_count(inserted_date,table_name)[0]["total_count"]
         print(total_count)
         for i in range(0,total_count,10000):
             t = threading.Thread(target=Acquisition.fetch_and_process_etl, args=(table_name, inserted_date,i))

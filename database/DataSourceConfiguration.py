@@ -37,6 +37,7 @@ def check_connection(max_retries=3, delay=1):
             return True
         except Exception as e:
             print(f"Failed to connect: {e}")
+            import time
             time.sleep(delay)
     return False
 

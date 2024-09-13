@@ -17,7 +17,7 @@ aquisition_service = RawService(DataSourceConfiguration.mysql_datasource)
 @etl.post("/load")
 def insert_user_data():
     try:
-        etl_datas = ['leave_txn','leave','user']
+        etl_datas = ['leave_txn','leave','user','designation']
         # Get start_date and end_date from the request body
         data = request.form.to_dict() or {}
         inserted_date = data.get('inserted_date')

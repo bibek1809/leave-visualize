@@ -1,19 +1,83 @@
 version: "3"
 services:
-  csv-datamart-api:
-    image: csv-datamart:v1
+  leave-api:
+    image: leave_api:v1
     build:
       context: .
       dockerfile: Dockerfile.dev
     restart: on-failure
-    # Remove port bindings when using host network mode
-    # ports:
-    #   - 4448:4448
     env_file:
       - .env
     volumes:
       - .:/app
-      - ./storage:/app/storage:rw
-      - ./templates:/app/templates
+      - ./templates:/app/templates:rw
       - ./static:/app/static
+    # Re-enable port binding
     network_mode: host
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./docker_files/sql/mysql_data:/var/lib/mysql:rw
+      - ./docker_files/sql/init:/docker-entrypoint-initdb.d:rw
+    network_mode: host
+
+
+  airflow-web:
+    image: apache/airflow:2.3.4
+    container_name: airflow-web
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      - AIRFLOW_HOME=/opt/airflow
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${AIRFLOW_DATABASE}
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__FERNET_KEY=h55x3HqqZ4S0wjN8UHzIprE-fUfRlTqfhALb-9cgWnw=
+      - PYTHONPATH=/opt/airflow
+    volumes:
+      - ./docker_files/airflow/dags:/opt/airflow/dags:rw
+    depends_on:
+      - mysql
+    network_mode: host
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        pip install pymysql && \
+        airflow db init && \
+        airflow users create --role Admin --username admin --password admin --email admin@gmail.com --firstname admin --lastname user && \
+        airflow webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.3.4
+    container_name: airflow-scheduler
+    restart: on-failure
+    environment:
+    - AIRFLOW_HOME=/opt/airflow
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${AIRFLOW_DATABASE}
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__CORE__FERNET_KEY=h55x3HqqZ4S0wjN8UHzIprE-fUfRlTqfhALb-9cgWnw=
+    - PYTHONPATH=/opt/airflow
+    volumes:
+      - ./docker_files/airflow/dags:/opt/airflow/dags:rw
+    depends_on:
+      - mysql
+    network_mode: host
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        pip install pymysql && \
+        airflow scheduler
+

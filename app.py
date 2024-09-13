@@ -76,11 +76,13 @@ def sample():
     supervisor_plot_path = Visualize.supervisor_analysis(dataframe)
     designation_plot_path = Visualize.designation_analysis(dataframe)
     leave_days_plot_path = Visualize.leave_days_analysis(dataframe)
+    leave_type_plot_path = Visualize.leave_type_bar_chart(dataframe)
     return render_template('sample.html', 
                            department_plot=department_plot_path, 
                            supervisor_plot=supervisor_plot_path, 
                            designation_plot=designation_plot_path, 
-                           leave_days_plot=leave_days_plot_path)
+                           leave_days_plot=leave_days_plot_path,
+                           leave_type_plot=leave_type_plot_path)
 
 
 

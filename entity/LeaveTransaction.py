@@ -4,7 +4,7 @@ class LeaveTransaction(Entity):
     def __init__(self, id=None, user_id=None, leave_type_id=None, start_date=None, end_date=None, leave_days=None,
                  reason=None, response_remarks=None, leave_status=None, is_converted=None, created_at=None, updated_at=None,
                  current_leave_issuer_id=None, issuer_first_name=None, issuer_middle_name=None, issuer_last_name=None,
-                 current_leave_issuer_email=None, is_consecutive=None,  is_automated=None,department_description=None,designation_name=None,is_supervisor=None,  is_hr=None):
+                 current_leave_issuer_email=None, is_consecutive=None,  is_automated=None,department_description=None,designation_name=None,designation_id=None,is_supervisor=None,  is_hr=None):
         self.id: int = id
         self.user_id: int = user_id
         self.leave_type_id: int = leave_type_id
@@ -26,5 +26,6 @@ class LeaveTransaction(Entity):
         self.is_automated: bool = is_automated
         self.department_description: str = department_description
         self.designation_name:str = designation_name
+        self.designation_id:int  = designation_id
         self.is_supervisor: bool = is_consecutive
         self.is_hr: bool = is_automated

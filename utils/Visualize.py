@@ -49,7 +49,6 @@ def department_analysis(df):
     return save_plot_as_base64(plt)
     #return save_plot_to_file(plt,'dept')
 
-# Function 2: Pie Chart for Supervisor vs Non-Supervisor Leave Requests
 def supervisor_analysis(df):
     plt.figure(figsize=(16, 10))
 
@@ -68,32 +67,42 @@ def supervisor_analysis(df):
 
     # Aggregate leave statistics by department and designation
     department_designation_stats = df.groupby(['department_description', 'designation_name'])['leave_days'].sum().reset_index()
-    
-    # Aggregate and handle cases with more than 5 unique departments or designations
+
+    # Calculate total leave days per department
+    total_leave_days_per_department = department_designation_stats.groupby('department_description')['leave_days'].sum().reset_index()
+    total_leave_days_per_department.rename(columns={'leave_days': 'total_leave_days'}, inplace=True)
+
+    # Merge the total leave days into the original stats
+    department_designation_stats = pd.merge(department_designation_stats, total_leave_days_per_department, on='department_description')
+
+    # Calculate the percentage of leave days for each designation within each department
+    department_designation_stats['leave_days_percentage'] = (department_designation_stats['leave_days'] / department_designation_stats['total_leave_days']) * 100
+
+    # Handle cases with more than 5 unique departments or designations
     def get_top_n_and_others(group, n=5):
-        top_n = group.nlargest(n, 'leave_days')
+        top_n = group.nlargest(n, 'leave_days_percentage')
         others = group[~group.index.isin(top_n.index)]
-        others = pd.DataFrame({'department_description': ['Other'], 'leave_days': [others['leave_days'].sum()]})
+        others = pd.DataFrame({'department_description': ['Other'], 'leave_days_percentage': [others['leave_days_percentage'].sum()]})
         return pd.concat([top_n, others])
 
     # Handle departments and designations separately
     department_stats = department_designation_stats.groupby('department_description').apply(lambda x: get_top_n_and_others(x, n=5)).reset_index(drop=True)
     designation_stats = department_designation_stats.groupby('designation_name').apply(lambda x: get_top_n_and_others(x, n=5)).reset_index(drop=True)
-    
-    # Pivot table for total leave days by department and designation
-    pivot_table_total = department_stats.pivot_table(
+
+    # Pivot table for leave days percentage by department and designation
+    pivot_table_percentage = department_stats.pivot_table(
         index='department_description',
         columns='designation_name',
-        values='leave_days',
+        values='leave_days_percentage',
         fill_value=0
     )
 
-    # Plot total leave days by department and designation
+    # Plot leave days percentage by department and designation
     plt.subplot(1, 1, 1)
-    pivot_table_total.plot(kind='bar', stacked=True, ax=plt.gca(), colormap='viridis', edgecolor='black')
-    plt.title('Total Leave Days by Department and Designation')
+    pivot_table_percentage.plot(kind='bar', stacked=True, ax=plt.gca(), colormap='viridis', edgecolor='black')
+    plt.title('Percentage of Leave Days by Department and Designation')
     plt.xlabel('Department')
-    plt.ylabel('Total Leave Days')
+    plt.ylabel('Leave Days (%)')
     plt.xticks(rotation=45, ha='right')
     plt.legend(title='Designation')
     plt.grid(True, linestyle='--', alpha=0.7)
@@ -102,7 +111,6 @@ def supervisor_analysis(df):
 
     # Save or return plot as needed
     return save_plot_as_base64(plt)
-
 
 
 # Function 3: Bar Chart for Leave Requests by Designation
@@ -167,25 +175,116 @@ def leave_days_analysis(df):
     # Calculate the total leave days for each month
     pivot_table['Total'] = pivot_table.sum(axis=1)
     
-    # Sort months by total leave days
-    sorted_months = pivot_table.sort_values(by='Total', ascending=False).index
+    # Convert leave days into percentage of total leave days for each month
+    pivot_table_percentage = pivot_table.div(pivot_table['Total'], axis=0) * 100
     
-    # Create a bar chart for leave requests by month and department
+    # Drop the 'Total' column as it's no longer needed for the percentage plot
+    pivot_table_percentage = pivot_table_percentage.drop(columns=['Total'])
+    
+    # Sort months by total leave days
+    sorted_months = pivot_table_percentage.index
+    
+    # Create a bar chart for leave requests by month and department (percentage)
     plt.figure(figsize=(14, 10))
     
     # Define colors
-    colors = plt.cm.viridis(range(0, 256, int(256/len(pivot_table.columns))))
+    colors = plt.cm.viridis(range(0, 256, int(256/len(pivot_table_percentage.columns))))
     
-    # Plot bars for each department
-    for i, department in enumerate(pivot_table.columns[:-1]):  # Exclude 'Total'
-        plt.barh(pivot_table.index, pivot_table[department], color=colors[i], label=department, edgecolor='black', height=0.8)
+    # Plot bars for each department (as percentage)
+    for i, department in enumerate(pivot_table_percentage.columns):
+        plt.barh(pivot_table_percentage.index, pivot_table_percentage[department], color=colors[i], label=department, edgecolor='black', height=0.8)
     
-    plt.title('Total Leave Requests by Month and Department')
-    plt.xlabel('Number of Requests')
+    plt.title('Percentage of Total Leave Requests by Month and Department')
+    plt.xlabel('Percentage of Requests')
     plt.ylabel('Month')
     plt.legend(title='Department')
     plt.gca().invert_yaxis()  # Invert y-axis for better readability
     plt.grid(True, linestyle='--', alpha=0.7)
     
     # Save or return plot as needed
+    return save_plot_as_base64(plt)
+
+
+def leave_type_pie_chart(df):
+    # Define the mapping from leave_type_id to leave type names
+    leave_type_mapping = {
+        8: 'Annual',
+        13: 'Maternity',
+        14: 'Paternity',
+        11: 'Leave Without Pay',
+        12: 'Bereavement',
+        9: 'Sick',
+        10: 'Well-being',
+        15: 'Menstruation',
+        7: 'Discretionary'
+    }
+    
+    # Map leave_type_id to leave type names
+    df['leave_type'] = df['leave_type_id'].map(leave_type_mapping)
+    
+    # Filter out 'Leave Without Pay' (leave_type_id = 11)
+    df_filtered = df[df['leave_type_id'] != 11]
+
+    # Calculate the total leave days for each leave type
+    leave_type_summary = df_filtered.groupby('leave_type')['leave_days'].sum().reset_index()
+
+    # Plot a pie chart for the leave type distribution
+    plt.figure(figsize=(8, 8))
+    plt.pie(
+        leave_type_summary['leave_days'], 
+        labels=leave_type_summary['leave_type'], 
+        autopct='%1.1f%%', 
+        startangle=90, 
+        colors=plt.cm.Paired.colors, 
+        wedgeprops={'edgecolor': 'black'}
+    )
+    
+    plt.title('Leave Type Distribution (Excluding Leave Without Pay)')
+    plt.axis('equal')  # Equal aspect ratio ensures the pie is circular.
+
+    # Save or return the pie chart as needed
+    return save_plot_as_base64(plt)
+
+def leave_type_bar_chart(df):
+    # Define the mapping from leave_type_id to leave type names
+    leave_type_mapping = {
+        8: 'Annual',
+        13: 'Maternity',
+        14: 'Paternity',
+        11: 'Leave Without Pay',
+        12: 'Bereavement',
+        9: 'Sick',
+        10: 'Well-being',
+        15: 'Menstruation',
+        7: 'Discretionary'
+    }
+    
+    # Map leave_type_id to leave type names
+    df['leave_type'] = df['leave_type_id'].map(leave_type_mapping)
+    
+    # Filter out 'Leave Without Pay' (leave_type_id = 11)
+    df_filtered = df[df['leave_type_id'] != 11]
+
+    # Calculate the total leave days for each leave type
+    leave_type_summary = df_filtered.groupby('leave_type')['leave_days'].sum().reset_index()
+
+    # Calculate the percentage of leave days for each type
+    total_leave_days = leave_type_summary['leave_days'].sum()
+    leave_type_summary['percentage'] = (leave_type_summary['leave_days'] / total_leave_days) * 100
+
+    # Plot a bar chart for the leave type distribution by percentage
+    plt.figure(figsize=(10, 6))
+    plt.barh(leave_type_summary['leave_type'], leave_type_summary['percentage'], color='skyblue', edgecolor='black')
+
+    plt.title('Leave Type Percentage Distribution (Excluding Leave Without Pay)')
+    plt.xlabel('Percentage of Total Leave Days')
+    plt.ylabel('Leave Type')
+
+    # Display the percentage on each bar
+    for index, value in enumerate(leave_type_summary['percentage']):
+        plt.text(value + 0.5, index, f'{value:.1f}%', va='center')
+
+    plt.tight_layout()
+
+    # Save or return the bar chart as needed
     return save_plot_as_base64(plt)
