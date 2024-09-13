@@ -26,3 +26,5 @@ Flask-Limiter==3.4.1
 requests==2.25.1
 gunicorn==19.9.0
 aiohttp
+sqlalchemy
+alembic

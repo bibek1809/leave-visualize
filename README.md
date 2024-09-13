@@ -28,3 +28,12 @@ You can view the API documentation by following this link:
 
 - `docs/`: Contains the Swagger documentation and other related resources.
 
+##upgrade database
+alembic upgrade head
+
+##downgrade database 
+alembic history --verbose
+
+alembic downgrade <revision_id>
+
+

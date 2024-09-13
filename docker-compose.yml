@@ -12,6 +12,7 @@ services:
       - .:/app
       - ./templates:/app/templates:rw
       - ./static:/app/static
+      - ./docker_files/alembic:/app/alembic:rw
     # Re-enable port binding
     network_mode: host
 
@@ -29,6 +30,7 @@ services:
       - ./docker_files/sql/mysql_data:/var/lib/mysql:rw
       - ./docker_files/sql/init:/docker-entrypoint-initdb.d:rw
     network_mode: host
+    
 
 
   airflow-web:
@@ -80,4 +82,5 @@ services:
       - |
         pip install pymysql && \
         airflow scheduler
+        
 
