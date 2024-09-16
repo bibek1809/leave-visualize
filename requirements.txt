@@ -28,4 +28,3 @@ gunicorn==19.9.0
 aiohttp
 sqlalchemy
 alembic
-dash
