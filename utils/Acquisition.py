@@ -43,12 +43,13 @@ class Acquisition:
     
     @staticmethod
     def update_status(id,status):
-        status_json = {
-            "id":id,
-            "status":status
-        }
-        space = ObjectMapper().map_to(status_json, Status)
-        status_service.update(space)
+        if status_service.find_by_id(id)[0]['status'] != 2:
+            status_json = {
+                "id":id,
+                "status":status
+            }
+            space = ObjectMapper().map_to(status_json, Status)
+            status_service.update(space)
     
     @staticmethod
     def fetch_leave_data(start_date, end_date, page, size=10000):
@@ -87,6 +88,16 @@ class Acquisition:
             date_ranges.append((start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")))
 
         return date_ranges
+    
+    @staticmethod
+    def convert_to_camel_case(snake_str):
+        # Split the string by underscores
+        components = snake_str.split('_')
+        
+        # Capitalize the first letter of each component and join them
+        camel_case_str = ''.join(x.capitalize() for x in components)
+        
+        return camel_case_str
 
     @staticmethod
     def camel_to_snake(name):
@@ -107,9 +118,8 @@ class Acquisition:
     # def process_from_log(table_name,date):
 
     @staticmethod
-    def fetch_and_process_data(start_date, end_date, page):
+    def fetch_and_process_data(start_date, end_date, page,status_id):
         try:
-            status_id = Acquisition.insert_status('Raw',start_date, end_date)
             response_data = Acquisition.fetch_leave_data(start_date, end_date, page)
             print(f"Processing data for {start_date} to {end_date}, page {page}")
             Acquisition.process_leave_data(response_data['data'], Raw,aquisition_service)
@@ -125,7 +135,7 @@ class Acquisition:
                 response_data = Acquisition.fetch_leave_data(start_date, end_date, page)
                 print(f"Processing data for {start_date} to {end_date}, page {page}")
                 Acquisition.process_leave_data(response_data['data'], Raw,aquisition_service)
-            Acquisition.update_status(status_id,1)
+            
 
         except Exception as e:
             Acquisition.update_status(status_id,2)
@@ -140,49 +150,48 @@ class Acquisition:
         if last_task != "Designation":
             print('task cannot be initiated now')
         else:
-            date_ranges = Acquisition.create_date_ranges(start_date, end_date)
+            try:
+                status_id = Acquisition.insert_status('Raw',start_date, end_date)
+                date_ranges = Acquisition.create_date_ranges(start_date, end_date)
 
-            threads = []
+                threads = []
 
-            # Launch a new thread for each date range
-            for start, end in date_ranges:
-                t = threading.Thread(target=Acquisition.fetch_and_process_data, args=(start, end, 1))
-                threads.append(t)
-                t.start()
+                # Launch a new thread for each date range
+                for start, end in date_ranges:
+                    t = threading.Thread(target=Acquisition.fetch_and_process_data, args=(start, end, 1,status_id))
+                    threads.append(t)
+                    t.start()
 
-                # Adding a delay between starting threads to prevent server overload
-                time.sleep(5)  # Pause 5 seconds before launching the next thread
+                    # Adding a delay between starting threads to prevent server overload
+                    time.sleep(5)  # Pause 5 seconds before launching the next thread
 
-            # Wait for all threads to finish
-            for t in threads:
-                t.join()
+                # Wait for all threads to finish
+                for t in threads:
+                    t.join()
+                Acquisition.update_status(status_id,1)
+            except Exception as e:
+                print(f"Error in task: {e}")
+                
+
 
     @staticmethod
-    def fetch_and_process_etl(table_name,inserted_date,position):
+    def fetch_and_process_etl(table_name,inserted_date,position,status_id):
         try:
             if table_name == 'user':
-                status_id = Acquisition.insert_status('User',inserted_date)
                 data = aquisition_service.get_user_data(inserted_date,position)
                 Acquisition.process_leave_data(data,User,user_service)
-                Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('Raw',status_id)
             elif table_name == 'leave':
-                status_id = Acquisition.insert_status('Leave',inserted_date)
                 data = aquisition_service.get_leave_data(inserted_date,position)
                 Acquisition.process_leave_data(data,Leave,leave_service)
-                Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('User',status_id)
             elif table_name == 'leave_txn':
-                status_id = Acquisition.insert_status('LeaveTxn',inserted_date)
                 data = aquisition_service.get_transaction_data(inserted_date,position)
                 Acquisition.process_leave_data(data,LeaveTransaction,leave_txn_service)
-                Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('Leave',status_id)
             elif table_name == 'designation':
-                status_id = Acquisition.insert_status('Designation',inserted_date)
                 data = aquisition_service.get_designation_data(inserted_date,position)
                 Acquisition.process_leave_data(data,Designation,designation_service)
-                Acquisition.update_status(status_id,1)
                 status_service.update_previous_status('LeaveTxn',status_id)
                 status_service.update_previous_status('Designation',status_id)
             else:
@@ -195,9 +204,9 @@ class Acquisition:
     def initiate_etl(table_name, inserted_date):
         threads = []
         total_count = aquisition_service.get_data_count(inserted_date,table_name)[0]["total_count"]
-        print(total_count)
+        status_id = Acquisition.insert_status(Acquisition.convert_to_camel_case(table_name),inserted_date)
         for i in range(0,total_count,10000):
-            t = threading.Thread(target=Acquisition.fetch_and_process_etl, args=(table_name, inserted_date,i))
+            t = threading.Thread(target=Acquisition.fetch_and_process_etl, args=(table_name, inserted_date,i,status_id))
             threads.append(t)
             t.start()
 
@@ -207,4 +216,5 @@ class Acquisition:
         # Wait for all threads to finish
         for t in threads:
             t.join()
+        Acquisition.update_status(status_id,1)
 
