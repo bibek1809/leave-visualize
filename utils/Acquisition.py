@@ -193,7 +193,7 @@ class Acquisition:
                 data = aquisition_service.get_designation_data(inserted_date,position)
                 Acquisition.process_leave_data(data,Designation,designation_service)
                 status_service.update_previous_status('LeaveTxn',status_id)
-                status_service.update_previous_status('Designation',status_id)
+                status_service.update_previous_status('Designation',status_id+1)
             else:
                 pass
         except Exception as e:
