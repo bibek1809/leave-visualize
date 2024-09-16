@@ -35,7 +35,7 @@ First, clone the repository from your version control system:
 
 bash
 
-git clone https://github.com/lfbibek2024
+git clone https://github.com/bibek1809/leave-visualize
 cd leave-visualize
 
 2. Configure the Environment
