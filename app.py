@@ -106,6 +106,8 @@ def sample():
                                        designation_plot=None,
                                        leave_days_plot=None,
                                        leave_type_plot=None,
+                                       startdate=start_date,
+                                        todate=end_date,
                                        error="Invalid date format.Check Data Range Properly")
 
     elif request.method == "POST":
