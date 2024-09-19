@@ -133,7 +133,7 @@
         </form>
     </div>
     <div class="date-range-header">
-        Visualization data for <span>{{ startdate[:10] }}</span> to <span>{{ todate[:10] }}</span>
+        Visualization data for <span id = "startdate-value">{{ startdate[:10] }}</span> to <span id = "todate-value">{{ todate[:10] }}</span>
     </div>
 
     <!-- Display plots -->
@@ -200,40 +200,42 @@
         }
     
         // AJAX request to submit form data without reloading the page
-        function submitForm(event) {
-            event.preventDefault(); // Prevent the default form submission behavior
+        // function submitForm(event) {
+        //     event.preventDefault(); // Prevent the default form submission behavior
     
-            if (validateForm()) {
-                const startDate = document.getElementById('startdate').value;
-                const endDate = document.getElementById('todate').value;
+        //     if (validateForm()) {
+        //         const startDate = document.getElementById('startdate-value').innerText;
+        //         const endDate = document.getElementById('todate-value').innerText;
+        //         // Create an AJAX request
+        //         const xhr = new XMLHttpRequest();
+        //         xhr.open("POST", "/submit-date-range", true);
+        //         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     
-                // Create an AJAX request
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/submit-date-range", true);
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        //         xhr.onreadystatechange = function() {
+        //             if (xhr.readyState === XMLHttpRequest.DONE) {
+        //                 if (xhr.status === 200) {
+        //                     // Handle successful response
+        //                     alert("Date range submitted successfully!");
+        //                 } else {
+        //                     // Handle error response
+        //                     alert("An error occurred: " + xhr.responseText);
+        //                 }
+        //             }
+        //         };
     
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            // Handle successful response
-                            alert("Date range submitted successfully!");
-                        } else {
-                            // Handle error response
-                            alert("An error occurred: " + xhr.responseText);
-                        }
-                    }
-                };
-    
-                // Send the form data as JSON
-                xhr.send(JSON.stringify({
-                    startdate: startDate,
-                    todate: endDate
-                }));
-            }
-        }
-    
-        // Add event listener to form submit button
-        document.getElementById('submitBtn').addEventListener('click', submitForm);
+        //         // Send the form data as JSON
+        //         xhr.send(JSON.stringify({
+        //             startdate: startDate,
+        //             todate: endDate
+        //         }));
+
+
+        //     }
+        // }
+
+
+        // // Add event listener to form submit button
+        // document.getElementById('submitBtn').addEventListener('click', submitForm);
     
         // Check if there's an error message from Flask and show a popup
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -242,6 +244,59 @@
                 alert(errorMessage);
             }
         });
+
+
+        function updatePlots() {console.log()
+        
+            const startDate = document.getElementById('startdate-value').innerText;
+            const endDate = document.getElementById('todate-value').innerText;
+
+            // Check if startDate and endDate are valid
+            if (!startDate || !endDate) {
+                console.error("Start date or end date not provided.");
+                return; // Exit the function if dates are missing
+            }
+
+            // Delay the request by 35 seconds
+            
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/sample", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                // const formdata = new FormData()
+                // formdata.set("startdate",startDate)
+                // formdata.set("todate",endDate )
+                // setTimeout(() => {
+                xhr.onreadystatechange = function() {
+                    console.log(xhr)
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = xhr.responseText;
+
+                            // Extract the new grid-container content from the response
+                            const newGridContent = tempDiv.querySelector('.grid-container');
+
+                            // Replace the current grid-container content if available
+                            const currentGridContainer = document.querySelector('.grid-container');
+                            if (currentGridContainer && newGridContent) {
+                                currentGridContainer.innerHTML = newGridContent.innerHTML;
+                            }
+                        } else {
+                            console.error("Failed to fetch updated plots: " + xhr.responseText);
+                        }
+                    }
+                };
+
+                    // Send the dates as part of the request payload in JSON format
+                    // xhr.send(JSON.stringify({ startdate: startDate, todate: endDate }));
+                    // xhr.send(formdata);
+                    xhr.send(`startdate=${startDate}&todate=${endDate}`)
+            //  ,2000);
+            //     }
+                }// 35 seconds delay
+            
+
+        setInterval(updatePlots, 300000);
     </script>
     
     
