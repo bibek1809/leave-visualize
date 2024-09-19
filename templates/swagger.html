@@ -133,8 +133,19 @@
         <div class="endpoint-description">
             Returns an HTML page with sample data visualizations. The data is for sample purposes and can be viewed as a webpage.
         </div>
-        <h4>URL: <code>/sample</code></h4>
+        <h4>URL:</h4>
+        <ul>
+            <li><code>/sample</code> - Returns a sample of the data without any filters.</li>
+            <li><code>/sample?startdate={startdate}&enddate={enddate}</code> - Returns a sample of the data filtered by the specified date range.</li>
+        </ul>
         <h4>Method: <code>GET</code></h4>
+        <div class="endpoint-parameters">
+            <h4>Query Parameters:</h4>
+            <ul>
+                <li><code>startdate</code> (optional) - The start date of the date range in the format YYYY-MM-DD.</li>
+                <li><code>enddate</code> (optional) - The end date of the date range in the format YYYY-MM-DD.</li>
+            </ul>
+        </div>
         <div class="endpoint-headers">
             <h4>Headers:</h4>
             <ul>
@@ -143,13 +154,15 @@
         </div>
         <div class="endpoint-response">
             <h4>Response:</h4>
-            <p>Returns an HTML page with embedded images of various visualizations.</p>
+            <p>Returns an HTML page with embedded images of various visualizations based on the provided date range. If no date range is provided, the data is not filtered.</p>
         </div>
         <div class="endpoint-example">
-            <h4>Usage Example:</h4>
+            <h4>Usage Examples:</h4>
             <pre><code>curl --location 'http://0.0.0.0:4448/sample'</code></pre>
+            <pre><code>curl --location 'http://0.0.0.0:4448/sample?startdate=2023-03-01&enddate=2024-07-01'</code></pre>
         </div>
     </div>
+    
 
     <div class="endpoint">
         <h3 id="visualize-download">3.4 Visualize Download</h3>

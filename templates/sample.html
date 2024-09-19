@@ -39,45 +39,211 @@
             border: 2px solid #555;
             border-radius: 8px;
             width: 100%;
-            height: auto; /* Maintain aspect ratio */
-            max-width: 500px; /* Ensure images don't exceed this width */
+            height: auto;
+            max-width: 500px;
         }
-        .plot-container:hover img {
-            transform: scale(1.05);
-            transition: transform 0.3s ease;
+        form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-container {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+     /* Date Range Header Styling */
+     .date-range-header {
+            background: linear-gradient(to right, #e0f7fa, #b9fbc0);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .date-range-header span {
+            color: #007BFF;
         }
     </style>
 </head>
 <body>
     <h1>Sample Plots</h1>
+    <div style="text-align: center;">
+        <button id="toggleFormBtn">Select Date Range</button>
+    </div>
 
+    <!-- Date picker form inside a hidden menu -->
+    <div class="form-container" id="dateFormContainer">
+        <form id="dateForm" method="POST" onsubmit="return validateForm()">
+            <label for="startdate">Start Date:</label>
+            <input type="date" id="startdate" name="startdate" value="{{ startdate if startdate else '2024-03-01' }}">
+
+            <label for="todate">End Date:</label>
+            <input type="date" id="todate" name="todate" value="{{ todate if todate else '2024-08-12' }}">
+
+            <button type="submit" name="Submit" value="Submit">Update Charts</button>
+        </form>
+    </div>
+    <div class="date-range-header">
+        Visualization data for <span>{{ startdate[:10] }}</span> to <span>{{ todate[:10] }}</span>
+    </div>
+
+    <!-- Display plots -->
     <div class="grid-container">
         <div class="plot-container">
             <h2>Department Analysis</h2>
             <img src="data:image/png;base64,{{ department_plot }}" alt="Department Analysis">
         </div>
-
         <div class="plot-container">
             <h2>Supervisor Analysis</h2>
-            <img src="data:image/png;base64,{{ supervisor_plot }}" alt="Supervisor Analysis on Leave Report">
+            <img src="data:image/png;base64,{{ supervisor_plot }}" alt="Supervisor Analysis">
         </div>
-
         <div class="plot-container">
             <h2>Designation Analysis</h2>
             <img src="data:image/png;base64,{{ designation_plot }}" alt="Designation Analysis">
         </div>
-
         <div class="plot-container">
             <h2>Leave Days Analysis</h2>
             <img src="data:image/png;base64,{{ leave_days_plot }}" alt="Leave Days Analysis">
         </div>
-
-        <!-- New section for the Leave Type Analysis -->
         <div class="plot-container">
             <h2>Leave Type Analysis</h2>
             <img src="data:image/png;base64,{{ leave_type_plot }}" alt="Leave Type Analysis">
         </div>
     </div>
 
+    <script>
+        // Toggle visibility of the form when the button is clicked
+        document.getElementById('toggleFormBtn').addEventListener('click', function() {
+            const formContainer = document.getElementById('dateFormContainer');
+            if (formContainer.style.display === 'none' || formContainer.style.display === '') {
+                formContainer.style.display = 'block';
+            } else {
+                formContainer.style.display = 'none';
+            }
+        });
+    
+        function validateForm() {
+            const startDateInput = document.getElementById('startdate');
+            const endDateInput = document.getElementById('todate');
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+    
+            // Check if the date values are valid
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                alert("Invalid date format. Use YYYY-MM-DD.");
+                return false;
+            }
+    
+            // Check if end date is earlier than start date
+            if (endDate < startDate) {
+                alert("End date cannot be earlier than start date.");
+                return false;
+            }
+    
+            // Check if date range is more than 9 months
+            const nineMonthsInMs = 9 * 30 * 24 * 60 * 60 * 1000; // Approximate number of milliseconds in 9 months
+            if (endDate - startDate > nineMonthsInMs) {
+                alert("Date range cannot be more than 9 months.");
+                return false;
+            }
+    
+            return true;
+        }
+    
+        // AJAX request to submit form data without reloading the page
+        function submitForm(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+    
+            if (validateForm()) {
+                const startDate = document.getElementById('startdate').value;
+                const endDate = document.getElementById('todate').value;
+    
+                // Create an AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/submit-date-range", true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Handle successful response
+                            alert("Date range submitted successfully!");
+                        } else {
+                            // Handle error response
+                            alert("An error occurred: " + xhr.responseText);
+                        }
+                    }
+                };
+    
+                // Send the form data as JSON
+                xhr.send(JSON.stringify({
+                    startdate: startDate,
+                    todate: endDate
+                }));
+            }
+        }
+    
+        // Add event listener to form submit button
+        document.getElementById('submitBtn').addEventListener('click', submitForm);
+    
+        // Check if there's an error message from Flask and show a popup
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const errorMessage = "{{ error|safe }}";
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+    
+    
 </body>
 </html>
