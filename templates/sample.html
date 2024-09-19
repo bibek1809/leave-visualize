@@ -170,35 +170,71 @@
                 formContainer.style.display = 'none';
             }
         });
-
+    
         function validateForm() {
             const startDateInput = document.getElementById('startdate');
             const endDateInput = document.getElementById('todate');
             const startDate = new Date(startDateInput.value);
             const endDate = new Date(endDateInput.value);
-
+    
             // Check if the date values are valid
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
                 alert("Invalid date format. Use YYYY-MM-DD.");
                 return false;
             }
-
+    
             // Check if end date is earlier than start date
             if (endDate < startDate) {
                 alert("End date cannot be earlier than start date.");
                 return false;
             }
-
-            // Check if date range is more than 3 months
-            const threeMonthsInMs = 270 * 24 * 60 * 60 * 1000; // Approximate number of milliseconds in 3 months
-            if (endDate - startDate > threeMonthsInMs) {
+    
+            // Check if date range is more than 9 months
+            const nineMonthsInMs = 9 * 30 * 24 * 60 * 60 * 1000; // Approximate number of milliseconds in 9 months
+            if (endDate - startDate > nineMonthsInMs) {
                 alert("Date range cannot be more than 9 months.");
                 return false;
             }
-
+    
             return true;
         }
-
+    
+        // AJAX request to submit form data without reloading the page
+        function submitForm(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+    
+            if (validateForm()) {
+                const startDate = document.getElementById('startdate').value;
+                const endDate = document.getElementById('todate').value;
+    
+                // Create an AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/submit-date-range", true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Handle successful response
+                            alert("Date range submitted successfully!");
+                        } else {
+                            // Handle error response
+                            alert("An error occurred: " + xhr.responseText);
+                        }
+                    }
+                };
+    
+                // Send the form data as JSON
+                xhr.send(JSON.stringify({
+                    startdate: startDate,
+                    todate: endDate
+                }));
+            }
+        }
+    
+        // Add event listener to form submit button
+        document.getElementById('submitBtn').addEventListener('click', submitForm);
+    
         // Check if there's an error message from Flask and show a popup
         document.addEventListener('DOMContentLoaded', (event) => {
             const errorMessage = "{{ error|safe }}";
@@ -207,5 +243,7 @@
             }
         });
     </script>
+    
+    
 </body>
 </html>
