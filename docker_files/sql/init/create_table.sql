@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS raw (
     inserted_at DATE,
     allocations TEXT
 );
-drop table if exist users;
 CREATE TABLE IF NOT EXISTS employee (
     id INT AUTO_INCREMENT PRIMARY KEY,
     emp_id VARCHAR(50),
