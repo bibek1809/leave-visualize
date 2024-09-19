@@ -34,6 +34,7 @@ def save_plot_as_base64(plt):
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
+    plt.close()
     img_base64 = base64.b64encode(buffer.getvalue()).decode()
     buffer.close()
     return img_base64
