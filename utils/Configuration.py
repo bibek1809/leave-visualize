@@ -19,7 +19,7 @@ LEAVE_API_HEADER = 'Bearer ' + env.get_or_default("api.authorizer", "")
 BASE_URL = env.get_or_default("base.url", "http://127.0.0.1:4448/api/v1/")
 DATE_VALIDATION_LIMIT = env.get_or_default("data.date.validation", 10)
 BASE_CODE = env.get_or_default("base.code","xxxx")
-
+LIMITER_CODE = env.get_or_default("limiter.code","xxxx")
 # def create_directories():
 #     dir_list = [RAW_FILE_PATH, TRANSFORM_FILE_PATH, BASE_FOLDER_NAME]
 #     for each_dir in dir_list:

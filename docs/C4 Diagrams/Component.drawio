@@ -1,29 +1,99 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.14">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.15">
   <diagram name="Page-1" id="ZZ8q9-yptv7bQm0k6y6k">
-    <mxGraphModel dx="794" dy="406" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1784" dy="1578" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="yTRN8KXDLpD-T7E1okME-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="80" y="72" width="500" height="118" as="geometry" />
+          <mxGeometry x="121" y="74" width="288" height="92" as="geometry" />
         </mxCell>
-        <mxCell id="yTRN8KXDLpD-T7E1okME-2" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;Processing Service&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="219" y="35" width="224" height="41" as="geometry" />
+        <mxCell id="yTRN8KXDLpD-T7E1okME-2" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Processing Service&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="172" y="40" width="173" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="yTRN8KXDLpD-T7E1okME-3" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Data Collector and ETL process&lt;/font&gt;&lt;br&gt;&lt;/div&gt;python inbuild function like threading and other handles" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="100" y="86" width="230" height="89" as="geometry" />
+        <mxCell id="yTRN8KXDLpD-T7E1okME-3" value="&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;Data Collector and ETL process&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;python inbuild function like threading and other handles&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="137" y="81" width="132" height="74" as="geometry" />
         </mxCell>
-        <mxCell id="yTRN8KXDLpD-T7E1okME-4" value="&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;span&gt;&lt;font style=&quot;font-size: 19px;&quot;&gt;Triggering and Management Module&lt;/font&gt;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 13px;&quot;&gt;&lt;font style=&quot;font-size: 13px;&quot;&gt;Airflow Triggers ETL and Acquisition&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 10px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="350" y="87" width="210" height="88" as="geometry" />
+        <mxCell id="yTRN8KXDLpD-T7E1okME-4" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;span&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;Triggering and Management Module&lt;/font&gt;&lt;/span&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;Airflow Triggers ETL and Acquisition&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="283" y="84" width="104" height="78.5" as="geometry" />
         </mxCell>
-        <mxCell id="yTRN8KXDLpD-T7E1okME-6" value="&lt;div&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Database Module&lt;/font&gt;&lt;/div&gt;&lt;div&gt;mysql stores raw and processed data&lt;br&gt;&lt;br&gt;&lt;style type=&quot;text/css&quot;&gt;p { color: #000000; line-height: 115%; text-align: left; orphans: 2; widows: 2; margin-bottom: 0.1in; direction: ltr; background: transparent }p.western { font-family: &quot;Arial&quot;, serif; font-size: 11pt; so-language: en-US }p.cjk { font-family: &quot;Arial&quot;; font-size: 11pt; so-language: zh-CN }p.ctl { font-family: &quot;Arial&quot;; font-size: 11pt; so-language: hi-IN }a:link { color: #000080; text-decoration: underline }&lt;/style&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="100" y="270" width="390" height="60" as="geometry" />
+        <mxCell id="yTRN8KXDLpD-T7E1okME-6" value="&lt;div&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Database Module&lt;/font&gt;&lt;/div&gt;&lt;div&gt;mysql stores raw and processed data&lt;br&gt;&lt;br&gt;&lt;style type=&quot;text/css&quot;&gt;p { color: #000000; line-height: 115%; text-align: left; orphans: 2; widows: 2; margin-bottom: 0.1in; direction: ltr; background: transparent }p.western { font-family: &quot;Arial&quot;, serif; font-size: 11pt; so-language: en-US }p.cjk { font-family: &quot;Arial&quot;; font-size: 11pt; so-language: zh-CN }p.ctl { font-family: &quot;Arial&quot;; font-size: 11pt; so-language: hi-IN }a:link { color: #000080; text-decoration: underline }&lt;/style&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="150" y="210" width="195" height="60" as="geometry" />
         </mxCell>
         <mxCell id="-apRGonFybBq35Q8NU8_-1" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.426;entryY=0.99;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="1" source="yTRN8KXDLpD-T7E1okME-6" target="yTRN8KXDLpD-T7E1okME-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="399" y="282" as="sourcePoint" />
             <mxPoint x="449" y="232" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-2" value="Aquire Data and Ingest it to sql" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-60" y="85.75" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-3" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;Ingestion Service&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-63.5" y="55.75" width="133" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-4" value="&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Vyaguta Platform" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-197" y="-20" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="J-9axvtC6ttfdQeGhDRX-2" target="J-9axvtC6ttfdQeGhDRX-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="176" y="154" as="sourcePoint" />
+            <mxPoint x="-119" y="106" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-138" y="116" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-7" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="J-9axvtC6ttfdQeGhDRX-2" target="yTRN8KXDLpD-T7E1okME-6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="176" y="154" as="sourcePoint" />
+            <mxPoint x="226" y="104" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-1" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-8" value="Load Raw Data to Sql" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry y="214" width="134" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-9" value="Load ETL processed Data" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="242" y="177" width="157" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-10" value="Visualize Transactional and Process Data" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="453" y="93" width="132" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-11" value="&lt;div&gt;Visualization Service&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="460.5" y="60" width="129" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-12" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="yTRN8KXDLpD-T7E1okME-6" target="J-9axvtC6ttfdQeGhDRX-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="176" y="154" as="sourcePoint" />
+            <mxPoint x="226" y="104" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="521" y="244" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-13" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;User&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="436" y="-37" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.383;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="J-9axvtC6ttfdQeGhDRX-13" target="J-9axvtC6ttfdQeGhDRX-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="246" y="154" as="sourcePoint" />
+            <mxPoint x="296" y="104" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="619" y="-15" />
+              <mxPoint x="619" y="123" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-15" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;Fetch Data For API&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-227" y="125" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-16" value="Retrieve Data" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="387" y="214" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J-9axvtC6ttfdQeGhDRX-17" value="Views Data" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="540" y="30" width="80" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
