@@ -153,5 +153,6 @@ You can view the API documentation by following this link:
 
 - `docs/`: Contains the Swagger documentation and other related resources.
 
+##Testing Connection
 
-
+- python -m unittest discover tests/ 
