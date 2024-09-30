@@ -4,7 +4,8 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 from airflow.hooks.mysql_hook import MySqlHook
 import subprocess
-
+import os
+LIMITER_CODE = os.getenv('LIMITER_CODE')
 # Default arguments for the DAG
 default_args = {
     'owner': 'airflow',
@@ -63,28 +64,28 @@ def run_curl_command(command):
 curl_task_2_user = PythonOperator(
     task_id='run_curl_2_user',
     python_callable=run_curl_command,
-    op_args=['curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09\' --form \'etl_name="user"\''],
+    op_args=[f"""curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: {LIMITER_CODE}\' --form \'etl_name="user"\'"""],
     dag=dag,
 )
 
 curl_task_2_leave = PythonOperator(
     task_id='run_curl_2_leave',
     python_callable=run_curl_command,
-    op_args=['curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09\' --form \'etl_name="leave"\''],
+    op_args=[f"""curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: {LIMITER_CODE}\' --form \'etl_name="leave"\'"""],
     dag=dag,
 )
 
 curl_task_2_leave_txn = PythonOperator(
     task_id='run_curl_2_leave_txn',
     python_callable=run_curl_command,
-    op_args=['curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09\' --form \'etl_name="leave_txn"\''],
+    op_args=[f"""curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: {LIMITER_CODE}\' --form \'etl_name="leave_txn"\'"""],
     dag=dag,
 )
 
 curl_task_2_designation = PythonOperator(
     task_id='run_curl_2_designation',
     python_callable=run_curl_command,
-    op_args=['curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09\' --form \'etl_name="designation"\''],
+    op_args=[f"""curl --location \'http://0.0.0.0:4448/api/v1/etl/load\' --header \'X-Custom-Passcode: {LIMITER_CODE}\' --form \'etl_name="designation"\'"""],
     dag=dag,
 )
 

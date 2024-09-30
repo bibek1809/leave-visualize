@@ -3,7 +3,8 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
 import subprocess
-
+import os
+LIMITER_CODE = os.getenv('LIMITER_CODE')
 # Default arguments
 default_args = {
     'owner': 'airflow',
@@ -32,7 +33,7 @@ def run_curl_command(command):
 run_raw_task = PythonOperator(
     task_id='run_curl_raw',
     python_callable=run_curl_command,
-    op_args=['curl --location --request POST \'http://0.0.0.0:4448/api/v1/acquire/insert\' --header \'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09\''],
+    op_args=[f"curl --location --request POST \'http://0.0.0.0:4448/api/v1/acquire/insert\' --header \'X-Custom-Passcode: {LIMITER_CODE}\'"],
     dag=dag,
 )
 
