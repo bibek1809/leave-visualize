@@ -64,6 +64,8 @@ services:
     image: apache/airflow:2.3.4
     container_name: airflow-scheduler
     restart: on-failure
+    env_file:
+      - .env
     environment:
     - AIRFLOW_HOME=/opt/airflow
     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${AIRFLOW_DATABASE}
