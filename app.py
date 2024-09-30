@@ -4,7 +4,7 @@ from flask_limiter import Limiter
 from datetime import datetime
 from flask_cors import CORS
 from utils import Configuration, token_encryption, Visualize
-from controller import AquisitionController,FileController,EtlController,VisualizeController
+from controller import AquisitionController,EtlController,VisualizeController
 from middleware.checkXCustomPasscode import PasscodeValidator
 
 complete_env_path = os.getcwd() + "/.env"
