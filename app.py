@@ -46,8 +46,6 @@ def add_custom_header():
             message['message'] = str(e)
             return message
 
-
-app.register_blueprint(FileController.file_blueprint)
 app.register_blueprint(AquisitionController.aquisition)
 app.register_blueprint(EtlController.etl)
 app.register_blueprint(VisualizeController.viz)
