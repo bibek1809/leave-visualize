@@ -18,6 +18,10 @@ def get_data(start_date=None,end_date=None,filter_params=None):
     df = pd.json_normalize(json_file)
     return df
 
+def get_leave_data(emp_id=None):
+    json_file = leave_txn_service.find_leave_balance(emp_id)
+    return json_file
+
 def save_plot_to_file(plt, filename):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')  # Current timestamp
     filename = f"{filename}_{timestamp}.png" 
@@ -38,6 +42,39 @@ def save_plot_as_base64(plt):
     img_base64 = base64.b64encode(buffer.getvalue()).decode()
     buffer.close()
     return img_base64
+
+
+def visualize_leave_data(df):
+    # Grouping data by leave type to sum up leave taken and available leave
+    summary = df.groupby('leave_type').agg(
+        total_available_leave=('available_leave', 'sum'),
+        total_leave_taken=('leave_taken', 'sum'),
+        total_users=('emp_id', lambda x: x.nunique())  # Count unique users
+    ).reset_index()
+
+    # Visualization: Bar Chart - Leave Taken and Available Leave by Leave Type
+    plt.figure(figsize=(10, 5))
+
+    # Bar for total leave taken
+    plt.bar(summary['leave_type'], summary['total_leave_taken'], color='#1f77b4', label='Total Leave Taken')  # Distinct color
+
+    # Bar for available leave
+    plt.bar(summary['leave_type'], summary['total_available_leave'], 
+            bottom=summary['total_leave_taken'], color='#ff7f0e', label='Total Available Leave')  # Distinct color
+
+    # Display total users on top of each bar
+    for i, row in summary.iterrows():
+        plt.text(row.name, row.total_leave_taken + row.total_available_leave + 1, 
+                 f'Users: {row.total_users}', ha='center', color='black')
+
+    plt.title('Leave Taken and Available Leave by Leave Type')
+    plt.xlabel('Leave Type')
+    plt.ylabel('Leave (Days)')
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.grid(axis='y')
+    plt.tight_layout()
+    return save_plot_as_base64(plt)
 
 # Function 1: Bar Chart for Leave Requests by Department
 def department_analysis(df):
