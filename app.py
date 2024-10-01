@@ -106,7 +106,7 @@ def sample():
                                        leave_type_plot=None,
                                        startdate=start_date,
                                         todate=end_date,
-                                       error="Invalid date format.Check Data Range Properly")
+                                       error="Invalid Parameters !!!!!!")
 
     elif request.method == "POST":
          # Checking for button press
@@ -150,7 +150,7 @@ def sample():
                                 leave_type_plot=None,
                                 startdate=start_date,
                                     todate=end_date,
-                                error="Invalid date format.Check Data Range Properly")
+                                error="Invalid Parameters !!!!!!")
 
 
 

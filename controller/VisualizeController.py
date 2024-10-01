@@ -31,22 +31,32 @@ def download(plot_type):
         # Ensure the plot_type is valid
         if plot_type not in ['department', 'supervisor', 'designation', 'leave']:
             return "Invalid plot type", 400
+        # Extract optional filter parameters
+        filters = {key: value for key, value in data.items() if key not in ['start_date', 'end_date']}
+        print(filters)
+        # Validate filter parameters if necessary (add your own validation logic if needed)
+        for key, value in filters.items():
+            if value is None or not isinstance(value, str):  # Example validation
+                return jsonify({"error": f"Invalid filter for {key}. It must be a non-empty string."}), 400
 
         # Get the sample dataframe
-        dataframe = Visualize.get_data(start_date,end_date)
 
-        # Generate the plot based on type
-        if plot_type == 'department':
-            plt = Visualize.department_analysis(dataframe)
-        elif plot_type == 'supervisor':
-            plt = Visualize.supervisor_analysis(dataframe)
-        elif plot_type == 'designation':
-            plt = Visualize.designation_analysis(dataframe)
-        elif plot_type == 'leave':
-            plt = Visualize.leave_days_analysis(dataframe)
-        elif plot_type == 'leave_type':
-            plt = Visualize.leave_type_bar_chart(dataframe)
-        img_data = base64.b64decode(plt)
+        dataframe = Visualize.get_data(start_date,end_date,filters)
+        if dataframe.empty:
+            img_data = None
+        else:
+            # Generate the plot based on type
+            if plot_type == 'department':
+                plt = Visualize.department_analysis(dataframe)
+            elif plot_type == 'supervisor':
+                plt = Visualize.supervisor_analysis(dataframe)
+            elif plot_type == 'designation':
+                plt = Visualize.designation_analysis(dataframe)
+            elif plot_type == 'leave':
+                plt = Visualize.leave_days_analysis(dataframe)
+            elif plot_type == 'leave_type':
+                plt = Visualize.leave_type_bar_chart(dataframe)
+            img_data = base64.b64decode(plt)
 
         # Return the file for download
         return Response(
@@ -55,4 +65,4 @@ def download(plot_type):
             headers={"Content-Disposition": f"attachment;filename={plot_type}_plot.png"}
         )
     except:
-        return jsonify({"Status":"Invalid Requesr or Invalid Date"})
+        return jsonify({"Status":"Invalid Request or Invalid Date or Invalid Parameters"})

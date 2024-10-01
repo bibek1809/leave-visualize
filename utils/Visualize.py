@@ -13,8 +13,8 @@ def get_sample():
     df = pd.json_normalize(json_file)
     return df
 
-def get_data(start_date=None,end_date=None):
-    json_file = leave_txn_service.find_data(start_date,end_date)
+def get_data(start_date=None,end_date=None,filter_params=None):
+    json_file = leave_txn_service.find_data(start_date,end_date,filter_params)
     df = pd.json_normalize(json_file)
     return df
 
