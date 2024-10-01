@@ -19,6 +19,23 @@ def leave_balance():
     json_data = json_formatter.format_leave_data(Visualize.get_leave_data(emp_id))
     return jsonify({"Data":json.loads(json_data)})
 
+@viz.route("/leavebalance/analysis",methods=['GET'])
+def leave_balance_analysis():
+    data = request.form.to_dict() or {}
+    emp_id = data.get('emp_id')
+    json_data = Visualize.get_leave_data(emp_id)
+    import pandas as pd
+    dataframe = pd.json_normalize(json_data)
+    plt = Visualize.visualize_leave_data(dataframe)
+    img_data = base64.b64decode(plt)
+    plot_type = 'leavebalance'
+    return Response(
+            img_data,
+            mimetype='image/png',
+            headers={"Content-Disposition": f"attachment;filename={plot_type}_plot.png"}
+        )
+
+
 
 @viz.route("/sample/download/<plot_type>", methods=['GET'])
 def download(plot_type):
