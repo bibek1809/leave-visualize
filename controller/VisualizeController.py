@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, jsonify, request,Response
 import base64
 from datetime import datetime, timedelta
-from utils import exception_handler,Visualize
+from utils import exception_handler,Visualize,json_formatter
 
 from utils.Configuration import executor
 viz = Blueprint(
@@ -11,6 +11,14 @@ viz = Blueprint(
 @viz.app_errorhandler(Exception)
 def handle_exception(e):
     return exception_handler.handle_exception(e)
+
+@viz.route("/leavebalance",methods=['GET'])
+def leave_balance():
+    data = request.form.to_dict() or {}
+    emp_id = data.get('emp_id')
+    json_data = json_formatter.format_leave_data(Visualize.get_leave_data(emp_id))
+    return jsonify({"Data":json.loads(json_data)})
+
 
 @viz.route("/sample/download/<plot_type>", methods=['GET'])
 def download(plot_type):

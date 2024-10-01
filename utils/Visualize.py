@@ -18,6 +18,10 @@ def get_data(start_date=None,end_date=None,filter_params=None):
     df = pd.json_normalize(json_file)
     return df
 
+def get_leave_data(emp_id=None):
+    json_file = leave_txn_service.find_leave_balance(emp_id)
+    return json_file
+
 def save_plot_to_file(plt, filename):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')  # Current timestamp
     filename = f"{filename}_{timestamp}.png" 
