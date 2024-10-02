@@ -26,8 +26,14 @@ def leave_balance_analysis():
     json_data = Visualize.get_leave_data(emp_id)
     import pandas as pd
     dataframe = pd.json_normalize(json_data)
-    plt = Visualize.visualize_leave_data(dataframe)
-    img_data = base64.b64decode(plt)
+    if dataframe.empty:
+        return jsonify({'Message':'No Data'})
+    try:
+        plt = Visualize.visualize_leave_data(dataframe)
+        img_data = base64.b64decode(plt)
+    except:
+        img_data= None
+    
     plot_type = 'leavebalance'
     return Response(
             img_data,
