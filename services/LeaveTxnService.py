@@ -12,7 +12,7 @@ class LeaveTxnService(JDBCRepository):
         if not emp_id:
             sql_query = ''
         else:
-            sql_query = f'''and  emp_id = '{emp_id}' '''
+            sql_query = f'''and  emp_id in ({emp_id}) '''
         return self.jdbcDataSource.execute(f"""select 
             e.emp_id ,
             e.leave_type,
