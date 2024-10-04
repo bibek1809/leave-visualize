@@ -55,7 +55,7 @@
         <h3 id="fetching-and-uploading-data">3.1 Fetching and Uploading Data</h3>
         <div class="endpoint-summary">Triggers the function to acquire data from the Vyaguta application.</div>
         <div class="endpoint-description">
-            If `start_date` and `end_date` are not provided, the API defaults to using yesterday's date for `start_date` and today's date for `end_date`.
+            If `category` is set to `api` or not provided, the API defaults to using yesterday's date for `start_date` and today's date for `end_date`. If `category` is set to `csv`, the `csv_file` parameter is required.
         </div>
         <h4>URL: <code>/api/v1/acquire/insert</code></h4>
         <h4>Method: <code>POST</code></h4>
@@ -70,25 +70,38 @@
             <ul class="parameters">
                 <li><code>start_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to yesterday.</li>
                 <li><code>end_date</code>: Optional, string in <code>YYYY-MM-DD</code> format. Defaults to today.</li>
+                <li><code>csv_file</code>: Required when <code>category</code> is set to <code>csv</code>, file path to the CSV file for upload (e.g., <code>"/path/to/file"</code>).</li>
+                <li><code>category</code>: Required, string indicating the category type. Can be <code>csv</code> or <code>api</code>.</li>
             </ul>
         </div>
         <div class="endpoint-response">
             <h4>Response:</h4>
             <div class="response">
                 <pre><code>{
-    "message": "Insert operation started for leave Table initiated as 2024-09-12"
-}</code></pre>
+        "message": "Insert operation started for leave Table initiated as 2024-09-12"
+    }</code></pre>
             </div>
         </div>
         <div class="endpoint-example">
-            <h4>Usage Example:</h4>
+            <h4>Usage Examples:</h4>
+            <h5>Example 1: Upload CSV File</h5>
             <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/acquire/insert' \
---header 'X-Custom-Passcode: passcode_here' \
---form 'start_date="2021-01-01"' \
---form 'end_date="2024-10-02"'</code></pre>
+    --header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09' \
+    --form 'csv_file=@"/path/to/file"' \
+    --form 'category="csv"'</code></pre>
+            <h5>Example 2: Acquire Data via API</h5>
+            <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/acquire/insert' \
+    --header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09' \
+    --form 'start_date="2024-10-01"' \
+    --form 'end_date="2024-10-02"' \
+    --form 'category="api"'</code></pre>
+            <h5>Example 3: Acquire Data via API without Dates</h5>
+            <pre><code>curl --location 'http://0.0.0.0:4448/api/v1/acquire/insert' \
+    --header 'X-Custom-Passcode: ZG5OalFBPT0hISYhIU1qQXlNdz09' \
+    --form 'category="api"'</code></pre>
         </div>
     </div>
-
+    
     <div class="endpoint">
         <h3 id="etl-process">3.2 ETL Process</h3>
         <div class="endpoint-summary">Triggers the ETL process for specific data sets.</div>
