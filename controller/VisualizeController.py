@@ -12,6 +12,13 @@ viz = Blueprint(
 def handle_exception(e):
     return exception_handler.handle_exception(e)
 
+@viz.route("/employee",methods=['GET'])
+def employee_profile():
+    data = request.form.to_dict() or {}
+    user_name = data.get('user_name')
+    json_data = Visualize.user_details(user_name)
+    return jsonify({"Data":json.loads(json.dumps(json_data))})
+
 @viz.route("/leavebalance",methods=['GET'])
 def leave_balance():
     data = request.form.to_dict() or {}
