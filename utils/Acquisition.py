@@ -68,6 +68,14 @@ class Acquisition:
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()  # Raise exception for bad responses
         return response.json()
+    
+    @staticmethod
+    def upload_csv(file_name):
+        import pandas as pd 
+        data = pd.read_csv(Configuration.RAW_FILE_PATH+file_name)
+        json_data = data.to_json(orient='records')
+        Acquisition.process_leave_data(json_data, Raw,aquisition_service)
+
 
     @staticmethod
     def create_date_ranges(start, end):

@@ -6,7 +6,15 @@ import base64
 from datetime import datetime
 from database import DataSourceConfiguration
 from services.LeaveTxnService import LeaveTxnService
+from services.UserService import UserService
 leave_txn_service = LeaveTxnService(DataSourceConfiguration.mysql_datasource)
+user_service = UserService(DataSourceConfiguration.mysql_datasource)
+
+
+def user_details(username):
+    json_file = user_service.find_user_data(username)
+    return json_file
+
 
 def get_sample():
     json_file = leave_txn_service.find_data()
