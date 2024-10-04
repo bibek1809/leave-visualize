@@ -13,6 +13,7 @@ services:
       - ./templates:/app/templates:rw
       - ./static:/app/static
       - ./docker_files/alembic:/app/alembic:rw
+      - ./docker_files/storage/:/app/storage
     # Re-enable port binding
     network_mode: host
 
